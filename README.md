@@ -1,1 +1,1 @@
-## Authentications using Next.js
+## Authentications using Next.js and MongoDB
