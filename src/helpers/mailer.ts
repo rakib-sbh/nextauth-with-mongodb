@@ -1,8 +1,9 @@
 import User from "@/models/user.model";
-import nodemailer from "nodemailer";
 import bcryptjs from "bcryptjs";
+import nodemailer from "nodemailer";
 
 export const sendEmail = async ({ email, emailType, userId }: any) => {
+  console.log("In the sendEmail function");
   try {
     const hashedToken = await bcryptjs.hash(userId.toString(), 10);
     if (emailType === "VERIFY") {
@@ -12,8 +13,10 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
       });
     } else if (emailType === "RESET") {
       await User.findByIdAndUpdate(userId, {
-        forgotPasswordToken: hashedToken,
-        forgotPasswordTokenExpiry: Date.now() + 36000000,
+        $set: {
+          forgotPasswordToken: hashedToken,
+          forgotPasswordTokenExpiry: Date.now() + 36000000,
+        },
       });
     }
 
@@ -22,12 +25,12 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
       port: 2525,
       auth: {
         user: "7f977123e8e3d2",
-        pass: "********9c43",
+        pass: "bb9f928f779c43",
       },
     });
 
     const mailOptions = {
-      from: "mailfromrupom@gmail.com",
+      from: "rakib.shellbeehaken@gmail.com",
       to: email,
       subject:
         emailType === "VERIFY" ? "Verify your email" : "Reset your password",
@@ -47,6 +50,7 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
 
     return mailResponse;
   } catch (error: any) {
+    console.log("Error occurred");
     throw new Error(error.message);
   }
 };
